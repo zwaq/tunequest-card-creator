@@ -63,6 +63,7 @@ function App() {
     const [overrideJsonErrorMessage, setOverrideJsonErrorMessage] = useState('');
     const overrideJsonRef = useRef<{ value: any } | null >({value: ""});
     const [overrideText, setOverrideText] = useState<string>('');
+    const [stripRemastered, setStripRemastered] = useState<boolean>(false);
 
     const handleOverrideChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         const input = event.target.value;
@@ -93,6 +94,23 @@ function App() {
             items.push(...result.items);
             offset += result.limit;
         } while (result.next !== null);
+
+        // optionally remove some irrelevant tokens from song titles
+        if (stripRemastered) {
+            for (var index in items) {
+                let track = items[index].track;
+                // remove dash space dash with remaster or stereo mix in the following text
+                let match = (track.name).match(/(.*) - .*(remaster|stereo mix).*/i);
+                if (match && match.length > 1) {
+                    track.name = match[1];
+                }
+                // remove variations of remaster in parentheses
+                match = (track.name).match(/(.*) \(.*remaster.*\)/i);
+                if (match && match.length > 1) {
+                    track.name = match[1];
+                }
+            }
+        }
 
         // construct override object indexed by track links
         // we need this to strip any possible &si= parts in the url
