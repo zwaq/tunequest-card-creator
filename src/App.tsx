@@ -55,6 +55,7 @@ const generateSessionPDFQrCode = async (
 function App() {
     const [url, setUrl] = useState<string>('');
     const [playlistItems, setPlaylistItems] = useState<PlaylistedTrack<Track>[] | null>(null);
+    const [finalPlaylistItems, setFinalPlaylistItems] = useState<PlaylistedTrack<Track>[] | null>(null);
     const [name, setName] = useState<string>('');
     const [codeType, setCodeType] = useState('qr');
     const inputRef = useRef<HTMLInputElement>(null);
@@ -77,6 +78,12 @@ function App() {
         }
         setOverrideText(input);
     };
+
+    const render = async () => {
+        console.log("render");
+        console.log(playlistItems);
+        setFinalPlaylistItems(playlistItems);
+    }
 
     const getPlaylist = async () => {
         const match = playlistRegex.exec(url);
@@ -185,8 +192,7 @@ When creating your playlist you need to pay attention to select the original tra
                             />
                         </div>
                     </div>
-                    <div className="flex items-end">
-                        <button
+                    <div className="flex items-end"> <button
                             onClick={getPlaylist}
                             className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
@@ -280,16 +286,24 @@ When creating your playlist you need to pay attention to select the original tra
                             </div>
                            {overrideJsonErrorMessage && <div style={{ color: 'red' }}>{overrideJsonErrorMessage}</div>}
                         </div>
+                        <div className="flex items-end"> <button
+                                onClick={render}
+                                className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                            >
+                                Render PDF
+                            </button>
+
+                        </div>
                     </div>
                 )}
                 </div>
             </div>
 
             {
-                playlistItems && (
+                finalPlaylistItems && (
                     <PDFViewer className="w-3/4 h-3/4 mx-auto mt-8">
                         <Document>
-                            {arrayChunks(playlistItems, 12).map((pageChunks, pageIndex) => (
+                            {arrayChunks(finalPlaylistItems, 12).map((pageChunks, pageIndex) => (
                                 <>
                                     <PDFPage size="A4" key={`page-${pageIndex}`} style={{
                                         display: 'flex',
