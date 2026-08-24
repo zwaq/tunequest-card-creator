@@ -54,7 +54,7 @@ const generateSessionPDFQrCode = async (
 
 const stripRemasteredTracks = (items: PlaylistedTrack<Track>[]): PlaylistedTrack<Track>[] => {
     return items.map(item => {
-        let track = item.track;
+        const track = item.track;
         let name = track.name;
         
         // Remove lines with only years
@@ -116,7 +116,7 @@ function App() {
     const sdk = SpotifyApi.withUserAuthorization(clientId, redirectUri, Scopes.playlistRead);
     const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
     const [overrideJsonErrorMessage, setOverrideJsonErrorMessage] = useState('');
-    const overrideJsonRef = useRef<{ value: any } | null >({value: ""});
+    const overrideJsonRef = useRef<{ value: OverrideItem[] } | null >({value: []});
     const [overrideText, setOverrideText] = useState<string>('');
     const [stripRemastered, setStripRemastered] = useState<boolean>(false);
     const [bingoCardCount, setBingoCardCount] = useState<number>(8);
@@ -141,7 +141,7 @@ function App() {
                 overrideJsonRef.current.value = JSON.parse(input);
             }
             setOverrideJsonErrorMessage('');
-        } catch (e) {
+        } catch {
             setOverrideJsonErrorMessage('Invalid JSON!');
         }
         setOverrideText(input);
@@ -155,7 +155,7 @@ function App() {
 
         const items: PlaylistedTrack<Track>[] = [];
         const limit = 50;
-        let result = null;
+        let result;
         let offset = 0;
 
         do {
@@ -167,14 +167,14 @@ function App() {
 
         // construct override object indexed by track links
         // we need this to strip any possible &si= parts in the url
-        let overrides : Overrides = {}
+        const overrides : Overrides = {}
         let overrideJson : OverrideItem[] = [];
         if (overrideJsonRef.current !== null) {
             overrideJson = overrideJsonRef.current.value
         }
-        for (var index in overrideJson) {
-            let item = overrideJson[index];
-            let match = trackUrlRegex.exec(item.link);
+        for (const index in overrideJson) {
+            const item = overrideJson[index];
+            const match = trackUrlRegex.exec(item.link);
             // If track has no further url parts, just use the track url as-is
             // else use the first part of the url
             if (!match) {
@@ -184,9 +184,9 @@ function App() {
             }
         }
         // apply overrides
-        for (var index in items) {
-            let track = items[index].track;
-            let override = overrides[track.external_urls.spotify]
+        for (const index in items) {
+            const track = items[index].track;
+            const override = overrides[track.external_urls.spotify]
             if (override) {
                 if (override.name) items[index].track.name = override.name;
                 if (override.artist) items[index].track.artists = [{
