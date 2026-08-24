@@ -90,7 +90,7 @@ const BINGO_CATEGORIES = [
 ];
 
 const generateBingoCard = () => {
-    const squares = [];
+    const squares: typeof BINGO_CATEGORIES = [];
     // Add exactly 5 squares for each category
     BINGO_CATEGORIES.forEach(category => {
         for (let i = 0; i < 5; i++) {
