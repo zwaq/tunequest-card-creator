@@ -24,6 +24,9 @@ There are some tolerances in the design to account for slight misalignments.
 When selecting your playlist, make sure to select a playlist with a reasonable amount of tracks since only 12 cards fit on one page.
 
 ## Getting Started
+This project uses [bun](https://bun.sh) for dependency management (`bun.lock` is the lockfile).
+Other package managers (npm, yarn, pnpm) will still work, but resolve dependencies from `package.json` ranges instead of the lockfile.
+
 If you want to run this project, you need to create a `.env` file in the root of the project with the following content:
 
 ```env
@@ -31,28 +34,22 @@ VITE_SPOTIFY_CLIENT_ID=
 VITE_SPOTIFY_REDIRECT_URI=http://localhost:5173
 ```
 
+Install the dependencies:
+
+```bash
+bun install
+```
+
 To run the development server:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
 bun dev
 ```
 
 To build the project:
 
 ```bash
-npm run build
-# or
-yarn build
-# or
-pnpm build
-# or
-bun build
+bun run build
 ```
 
 
@@ -61,7 +58,7 @@ bun build
 Use the provided `docker-compose.yaml` file to run the docker image.
 
 ```bash
-npm run build
+bun run build
 docker-compose up -d
 ```
 

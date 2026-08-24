@@ -1,16 +1,16 @@
-FROM node:18 AS build
+FROM oven/bun:1 AS build
 WORKDIR /app
 
 # Install dependencies
-COPY package*.json ./
-RUN npm install
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
 
 # Build app
 COPY . .
 # We set the environment variables to fixed strings that will later be replaced during startup in the nginx container
 ENV VITE_SPOTIFY_CLIENT_ID="REPLACEME_VITE_SPOTIFY_CLIENT_ID"
 ENV VITE_SPOTIFY_REDIRECT_URI="REPLACEME_VITE_SPOTIFY_REDIRECT_URI"
-RUN npm run build
+RUN bun run build
 
 # Prepare nginx container
 FROM nginx:latest
