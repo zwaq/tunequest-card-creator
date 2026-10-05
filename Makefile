@@ -1,6 +1,9 @@
 .PHONY: build
 build:
-	docker build . -t zwaq/tqc:1.1.0
+	docker buildx build . \
+		--platform=linux/amd64,linux/arm64 \
+		--tag=zwaq/tunequest-card-creator:1.1.0 \
+		--push
 
 .PHONY: run
 run:
